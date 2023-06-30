@@ -1,0 +1,98 @@
+<!-- loyout.html -->
+{% extends "loyout.html" %} {% block title %}短網址生成器{% endblock %} {% block
+content %}
+
+<div class="row">
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">創建短網址</h5>
+        <form name="form1" onsubmit="sendData();return false;">
+          <label for="url" class="form-label">長網址</label>
+          <input
+            class="form-control mb-3"
+            type="text"
+            name="url"
+            placeholder="輸入長網址"
+            required
+            id="url"
+          />
+          <div class="text-center mb-3">
+            <button
+              type="submit"
+              class="btn btn-primary text-center"
+              style="width: 200px"
+            >
+              生成短網址
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">短網址</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          關閉
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function sendData() {
+    const form = document.forms.form1
+    const input = form.elements.url.value
+    const modal = new bootstrap.Modal(document.querySelector("#exampleModal"))
+
+    // Make a POST request to the server
+    fetch("/api/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ url: input }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the response from the server
+        if (data.success) {
+          const shortURL = data.short_url
+          // alert(`Short URL: ${shortURL}`)
+          document.querySelector(
+            ".modal-body"
+          ).innerHTML = `短網址: <a href="${shortURL}">${shortURL}</a>`
+          modal.show()
+        } else {
+          const error = data.error
+          alert(`Error: ${error}`)
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error)
+      })
+  }
+</script>
+{% endblock %}
