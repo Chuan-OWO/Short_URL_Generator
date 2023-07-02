@@ -67,7 +67,6 @@ content %}
     const input = form.elements.url.value
     const modal = new bootstrap.Modal(document.querySelector("#exampleModal"))
 
-    // Make a POST request to the server
     fetch("/api/create", {
       method: "POST",
       headers: {
@@ -77,7 +76,6 @@ content %}
     })
       .then((response) => response.json())
       .then((data) => {
-        // Handle the response from the server
         if (data.success) {
           const shortURL = data.short_url
           // alert(`Short URL: ${shortURL}`)
